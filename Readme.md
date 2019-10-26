@@ -18,12 +18,9 @@
 |   |-- CamadaEnlace.cpp
 |   |-- CamadaFisica.cpp
 |   `-- Simulador.cpp
-|-- test
-|   `-- tester.cpp
-`-- tree.txt
+`-- test
+    `-- tester.cpp
 ```
-
-6 directories, 11 files
 
 ## Dependências
 

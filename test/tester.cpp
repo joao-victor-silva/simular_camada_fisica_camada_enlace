@@ -26,3 +26,22 @@ TEST_CASE("O quadro 01001110 deve retornar 01100101 10101001 na codificacao de \
   REQUIRE(manchester_quadros[1] == manchester_quadros_esperado[1]);
 }
 
+
+TEST_CASE("O quadro 01100101 10101001 na codificacao de \
+    manchester deve retornar o quadro 01001110 decodificado", "[codificacao]") {
+  std::bitset<8> quadro_esperado;
+  std::vector<std::bitset<8>> manchester_quadros;
+  std::vector<std::bitset<8>> decodificado_quadros;
+
+  quadro_esperado = 0b01001110;
+
+  manchester_quadros.push_back(std::bitset<8> (0b10101001));
+  manchester_quadros.push_back(std::bitset<8> (0b01100101));
+
+  decodificado_quadros =
+    CamadaFisicaReceptoraDecodificacaoManchester(manchester_quadros);
+
+  REQUIRE(decodificado_quadros.size() == 1);
+  REQUIRE(quadro_esperado == decodificado_quadros[0]);
+}
+

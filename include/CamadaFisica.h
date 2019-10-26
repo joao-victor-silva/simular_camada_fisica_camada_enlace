@@ -12,7 +12,7 @@ void CamadaFisicaTransmissoraCodificacaoManchesterDiferencial();
 
 void CamadaFisicaReceptora();
 void CamadaFisicaReceptoraDecodificacaoBinaria();
-void CamadaFisicaReceptoraDecodificacaoManchester();
+std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<std::bitset<8>>&);
 void CamadaFisicaReceptoraDecodificacaoManchesterDiferencial();
 
 

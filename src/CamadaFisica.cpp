@@ -61,8 +61,31 @@ void CamadaFisicaReceptoraDecodificacaoBinaria() {
 
 }
 
-void CamadaFisicaReceptoraDecodificacaoManchester() {
+std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<std::bitset<8>>& manchester_quadros) {
+  std::vector<std::bitset<8>> decodificado_quadros;
+  for (unsigned int i = 0; i < manchester_quadros.size() / 2; i++) {
+    std::bitset<8> decodificado_quadro;
+    for (int j = 0; j <= 3; j++) {
+      if (manchester_quadros[2 * i][(2 * j)] == 0b0 &&
+          manchester_quadros[2 * i][(2 * j) + 1] == 0b1) {
+        decodificado_quadro[j] = 0b1;
+      } else {
+        decodificado_quadro[j] = 0b0;
+      }
+    }
 
+    for (int j = 0; j <= 3; j++) {
+      if (manchester_quadros[(2 * i) + 1][(2 * j)] == 0b0 &&
+          manchester_quadros[(2 * i) + 1][(2 * j) + 1] == 0b1) {
+        decodificado_quadro[4 + j] = 0b1;
+      } else {
+        decodificado_quadro[4 + j] = 0b0;
+      }
+    }
+    decodificado_quadros.push_back(decodificado_quadro);
+  }
+
+  return decodificado_quadros;
 }
 
 void CamadaFisicaReceptoraDecodificacaoManchesterDiferencial() {
@@ -73,4 +96,3 @@ void CamadaFisicaReceptoraDecodificacaoManchesterDiferencial() {
 // Meio de Comunicacao
 void MeioDeComunicacao() {
 
-}
