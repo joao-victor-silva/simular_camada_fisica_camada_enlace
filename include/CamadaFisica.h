@@ -1,8 +1,11 @@
+#include <bitset>
+#include <vector>
+
 // Transmissao
 
 void CamadaFisicaTransmissora();
 void CamadaFisicaTransmissoraCodificacaoBinaria();
-void CamadaFisicaTransmissoraCodificacaoManchester();
+std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<std::bitset<8>>&);
 void CamadaFisicaTransmissoraCodificacaoManchesterDiferencial();
 
 // Recepcao
