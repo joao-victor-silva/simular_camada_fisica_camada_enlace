@@ -6,6 +6,27 @@
 
 #include "CamadaFisica.h"
 
+TEST_CASE("O quadro 01001110 deve retornar 01001110 na codificacao \
+    binaria", "[codificacao]") {
+
+  std::vector<std::bitset<8>> quadros;
+  std::vector<std::bitset<8>> quadros_em_binario;
+  std::vector<std::bitset<8>> quadros_em_binario_esperado;
+
+  std::bitset<8> mensagem;
+  mensagem = 0b01001110;
+  quadros.push_back(mensagem);
+
+  quadros_em_binario = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+
+  quadros_em_binario_esperado.push_back(std::bitset<8> (0b01001110));
+
+  REQUIRE(quadros_em_binario.size() == 1);
+  REQUIRE(quadros_em_binario[0] == quadros_em_binario_esperado[0]);
+
+}
+
+
 TEST_CASE("O quadro 01001110 deve retornar 01100101 10101001 na codificacao de \
     manchester", "[codificacao]") {
   std::vector<std::bitset<8>> quadros;
