@@ -66,3 +66,21 @@ TEST_CASE("O quadro 01100101 10101001 na codificacao de \
   REQUIRE(quadro_esperado == decodificado_quadros[0]);
 }
 
+TEST_CASE("O quadro 01001110 na codificacao binaria \
+    deve retornar o quadro 01001110 decodificado", "[codificacao]") {
+  std::bitset<8> quadro_esperado;
+  std::vector<std::bitset<8>> quadros_em_binario;
+  std::vector<std::bitset<8>> quadros_em_binario_decodificado;
+
+  quadro_esperado = 0b01001110;
+
+  quadros_em_binario.push_back(std::bitset<8> (0b10101001));
+
+  quadros_em_binario_decodificado =
+    CamadaFisicaReceptoraDecodificacaoBinaria(quadros_em_binario);
+
+  REQUIRE(quadros_em_binario_decodificado.size() == 1);
+  REQUIRE(quadro_esperado == quadros_em_binario_decodificado[0]);
+}
+
+
