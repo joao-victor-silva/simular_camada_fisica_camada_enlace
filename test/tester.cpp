@@ -74,7 +74,7 @@ TEST_CASE("O quadro 01001110 na codificacao binaria \
 
   quadro_esperado = 0b01001110;
 
-  quadros_em_binario.push_back(std::bitset<8> (0b10101001));
+  quadros_em_binario.push_back(std::bitset<8> (0b01001110));
 
   quadros_em_binario_decodificado =
     CamadaFisicaReceptoraDecodificacaoBinaria(quadros_em_binario);
@@ -82,5 +82,4 @@ TEST_CASE("O quadro 01001110 na codificacao binaria \
   REQUIRE(quadros_em_binario_decodificado.size() == 1);
   REQUIRE(quadro_esperado == quadros_em_binario_decodificado[0]);
 }
-
 

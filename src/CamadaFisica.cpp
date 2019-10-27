@@ -57,8 +57,8 @@ void CamadaFisicaReceptora() {
 
 }
 
-void CamadaFisicaReceptoraDecodificacaoBinaria() {
-
+std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<std::bitset<8>>& quadros_em_binario) {
+  return quadros_em_binario;
 }
 
 std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<std::bitset<8>>& manchester_quadros) {
