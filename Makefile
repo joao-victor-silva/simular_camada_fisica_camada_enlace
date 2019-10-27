@@ -2,6 +2,7 @@ CC := g++
 # CC := clang --analyze
 SRCDIR := src
 BUILDDIR := build
+BINDIR := bin
 TARGET := bin/Simulador
 
 SRCEXT := cpp
@@ -19,6 +20,7 @@ $(TARGET): $(OBJECTS)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(BINDIR)
 	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
@@ -27,6 +29,8 @@ clean:
 	@echo " $(RM) -r $(BUILDDIR) $(TEST_TARGET)"; $(RM) -r $(BUILDDIR) bin/tester
 
 tester: $(TEST_OBJECTS)
+	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $^ test/tester.cpp $(INC) $(LIB) -o bin/tester
 
 .PHONY: clean

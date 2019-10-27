@@ -11,8 +11,8 @@ void CamadaFisicaTransmissora() {
 
 }
 
-void CamadaFisicaTransmissoraCodificacaoBinaria() {
-
+std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<std::bitset<8>>& quadros) {
+  return quadros;
 }
 
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<std::bitset<8>>& quadros) {
@@ -96,3 +96,4 @@ void CamadaFisicaReceptoraDecodificacaoManchesterDiferencial() {
 // Meio de Comunicacao
 void MeioDeComunicacao() {
 
+}
