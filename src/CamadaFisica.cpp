@@ -4,11 +4,25 @@
 
 #include "CamadaFisica.h"
 
-
 // Transmissao
 
-void CamadaFisicaTransmissora() {
-
+void CamadaFisicaTransmissora(std::vector<bitset<8>>& quadros, int tipo_de_codificacao) {
+  std::vector<std::bitset<8>> fluxo_de_bits;
+  switch (tipo_de_codificacao) {
+    case 0:
+      fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+      break;
+    case 1:
+      fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoManchester(quadros);
+      break;
+    case 2:
+      fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadros);
+      break;
+    default:
+      fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+      break;
+  }
+  MeioDeComunicacao(quadros);
 }
 
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<std::bitset<8>>& quadros) {

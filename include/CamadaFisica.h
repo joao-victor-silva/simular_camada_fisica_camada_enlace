@@ -3,7 +3,7 @@
 
 // Transmissao
 
-void CamadaFisicaTransmissora();
+void CamadaFisicaTransmissora(std::vector<std::bitset<8>>&, int);
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<std::bitset<8>>&);
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<std::bitset<8>>&);
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(std::vector<std::bitset<8>>&);
