@@ -46,7 +46,7 @@ std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchester(std::v
   return manchester_quadros;
 }
 
-void CamadaFisicaTransmissoraCodificacaoManchesterDiferencial() {
+std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(std::vector<std::bitset<8>>& quadros) {
 
 }
 
