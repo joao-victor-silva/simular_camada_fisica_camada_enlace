@@ -136,16 +136,16 @@ void CamadaFisicaReceptora(std::vector<std::bitset<8>>& quadros, int tipo_de_cod
   std::vector<std::bitset<8>> fluxo_de_bits;
   switch (tipo_de_codificacao) {
   case 0:
-    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+    fluxo_de_bits = CamadaFisicaReceptoraDecodificacaoBinaria(quadros);
     break;
   case 1:
-    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoManchester(quadros);
+    fluxo_de_bits = CamadaFisicaReceptoraDecodificacaoManchester(quadros);
     break;
   case 2:
-    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadros);
+    fluxo_de_bits = CamadaFisicaReceptoraDecodificacaoManchesterDiferencial(quadros);
     break;
   default:
-    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+    fluxo_de_bits = CamadaFisicaReceptoraDecodificacaoBinaria(quadros);
     break;
   }
 
