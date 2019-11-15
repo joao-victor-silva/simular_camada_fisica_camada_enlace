@@ -152,7 +152,7 @@ std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchester(std::ve
   return decodificado_quadros;
 }
 
-void CamadaFisicaReceptoraDecodificacaoManchesterDiferencial() {
+std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchesterDiferencial(std::vector<std::bitset<8>>& manchester_diferencial_quadros) {
 
 }
 
