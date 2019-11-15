@@ -153,7 +153,65 @@ std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchester(std::ve
 }
 
 std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchesterDiferencial(std::vector<std::bitset<8>>& manchester_diferencial_quadros) {
+  std::bitset<2> last_bit_manchester_diferencial = 0b01;
+  int last_bit = -1;
+  std::vector<std::bitset<8>> decodificado_quadros;
 
+  // 01101010 10011001
+
+  // 0111             0010
+  // 01 10 01 10      10 10 01 01
+
+  // 01110010
+
+  // 01001110
+
+  for (unsigned int i = 0; i < manchester_diferencial_quadros.size() / 2; i++) {
+    std::bitset<8> decodificado_quadro;
+    for (int j = 0; j <= 3; j++) {
+      std::bitset<2> encode_bit;
+      encode_bit[0] = manchester_diferencial_quadros[2 * i][(2 * j)];
+      encode_bit[1] = manchester_diferencial_quadros[2 * i][(2 * j) + 1];
+      if (last_bit == -1) {
+        if (encode_bit == last_bit_manchester_diferencial) {
+          decodificado_quadro[j] = 0b0;
+          last_bit = 0;
+        } else {
+          decodificado_quadro[j] = 0b1;
+          last_bit = 1;
+          last_bit_manchester_diferencial = encode_bit;
+        }
+      } else {
+        if (encode_bit == last_bit_manchester_diferencial) {
+          decodificado_quadro[j] = 0b0;
+          last_bit = 0;
+        } else {
+          decodificado_quadro[j] = 0b1;
+          last_bit = 1;
+          last_bit_manchester_diferencial = encode_bit;
+        }
+      }
+    }
+
+    for (int j = 0; j <= 3; j++) {
+      std::bitset<2> encode_bit;
+      encode_bit[0] = manchester_diferencial_quadros[(2 * i) + 1][(2 * j)];
+      encode_bit[1] = manchester_diferencial_quadros[(2 * i) + 1][(2 * j) + 1];
+
+      if (encode_bit == last_bit_manchester_diferencial) {
+        decodificado_quadro[4 + j] = 0b0;
+        last_bit = 0;
+      } else {
+        decodificado_quadro[4 + j] = 0b1;
+        last_bit = 1;
+        last_bit_manchester_diferencial = encode_bit;
+      }
+    }
+
+    decodificado_quadros.push_back(decodificado_quadro);
+  }
+
+  return decodificado_quadros;
 }
 
 
