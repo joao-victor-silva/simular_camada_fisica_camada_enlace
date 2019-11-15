@@ -3,10 +3,11 @@
 #include <iostream>
 
 #include "CamadaFisica.h"
+#include "MeioDeComunicacao.h"
 
 // Transmissao
 
-void CamadaFisicaTransmissora(std::vector<bitset<8>>& quadros, int tipo_de_codificacao) {
+void CamadaFisicaTransmissora(std::vector<std::bitset<8>>& quadros, int tipo_de_codificacao) {
   std::vector<std::bitset<8>> fluxo_de_bits;
   switch (tipo_de_codificacao) {
     case 0:
@@ -246,7 +247,3 @@ std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchesterDiferenc
 }
 
 
-// Meio de Comunicacao
-void MeioDeComunicacao() {
-
-}
