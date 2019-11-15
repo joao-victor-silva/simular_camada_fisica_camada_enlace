@@ -22,7 +22,8 @@ void CamadaFisicaTransmissora(std::vector<bitset<8>>& quadros, int tipo_de_codif
       fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
       break;
   }
-  MeioDeComunicacao(quadros);
+
+  MeioDeComunicacao(fluxo_de_bits, tipo_de_codificacao);
 }
 
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<std::bitset<8>>& quadros) {
@@ -131,8 +132,24 @@ std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchesterDiferen
 
 // Recepcao
 
-void CamadaFisicaReceptora() {
+void CamadaFisicaReceptora(std::vector<std::bitset<8>>& quadros, int tipo_de_codificacao) {
+  std::vector<std::bitset<8>> fluxo_de_bits;
+  switch (tipo_de_codificacao) {
+  case 0:
+    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+    break;
+  case 1:
+    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoManchester(quadros);
+    break;
+  case 2:
+    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadros);
+    break;
+  default:
+    fluxo_de_bits = CamadaFisicaTransmissoraCodificacaoBinaria(quadros);
+    break;
+  }
 
+  CamadaDeAplicacaoReceptora(fluxo_de_bits);
 }
 
 std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<std::bitset<8>>& quadros_em_binario) {
