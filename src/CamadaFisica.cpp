@@ -4,6 +4,7 @@
 
 #include "CamadaFisica.h"
 #include "MeioDeComunicacao.h"
+#include "CamadaAplicacao.h"
 
 // Transmissao
 
