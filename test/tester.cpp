@@ -84,7 +84,7 @@ TEST_CASE("O quadro 01001110 na codificacao binaria \
 }
 
 
-TEST_CASE("O quadro 01001110 deve retornar 01101010 01100101 na codificacao de \
+TEST_CASE("O quadro 01001110 deve retornar 01011010 10011001 na codificacao de \
     manchester diferencial", "[codificacao]") {
   std::vector<std::bitset<8>> quadros;
   std::vector<std::bitset<8>> manchester_diferencial_quadros;
@@ -96,8 +96,8 @@ TEST_CASE("O quadro 01001110 deve retornar 01101010 01100101 na codificacao de \
 
   manchester_diferencial_quadros = CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(quadros);
 
-  manchester_diferencial_quadros_esperado.push_back(std::bitset<8> (0b01100101));
-  manchester_diferencial_quadros_esperado.push_back(std::bitset<8> (0b01101010));
+  manchester_diferencial_quadros_esperado.push_back(std::bitset<8> (0b10011001));
+  manchester_diferencial_quadros_esperado.push_back(std::bitset<8> (0b01011010));
 
   REQUIRE(manchester_diferencial_quadros.size() == 2);
   REQUIRE(manchester_diferencial_quadros[0] == manchester_diferencial_quadros_esperado[0]);

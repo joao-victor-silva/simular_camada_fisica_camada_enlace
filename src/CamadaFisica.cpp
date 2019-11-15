@@ -47,7 +47,71 @@ std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchester(std::v
 }
 
 std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(std::vector<std::bitset<8>>& quadros) {
+  std::bitset<2> last_bit_manchester = 0b00;
+  int last_bit = -1;
+  std::vector<std::bitset<8>> manchester_diferencial_quadros;
 
+  // 01001110
+
+  // 01110010
+
+  // 0111             0010
+  // 01 10 01 10      10 10 01 01
+
+  // 01101010 10011001
+
+  for (std::bitset<8>& quadro: quadros) {
+    std::bitset<8> inicio_do_quadro;
+    std::bitset<8> fim_do_quadro;
+
+    for (int i = 0; i <= 3; i++) {
+      if (last_bit == -1) {
+        if (quadro[i] == 0b0) {
+          last_bit = 0;
+          last_bit_manchester[0] = 0b1;
+          last_bit_manchester[1] = 0b0;
+          fim_do_quadro[(2 * i)] = last_bit_manchester[0];
+          fim_do_quadro[(2 * i) + 1] = last_bit_manchester[1];
+        } else {
+          last_bit = 1;
+          last_bit_manchester[0] = 0b0;
+          last_bit_manchester[1] = 0b1;
+          fim_do_quadro[(2 * i)] = last_bit_manchester[0];
+          fim_do_quadro[(2 * i) + 1] = last_bit_manchester[1];
+        }
+      } else {
+        if (quadro[i] == 0) {
+          last_bit = 0;
+          fim_do_quadro[(2 * i)] = last_bit_manchester[0];
+          fim_do_quadro[(2 * i) + 1] = last_bit_manchester[1];
+        } else {
+          last_bit = 1;
+          last_bit_manchester = ~last_bit_manchester;
+          fim_do_quadro[(2 * i)] = last_bit_manchester[0];
+          fim_do_quadro[(2 * i) + 1] = last_bit_manchester[1];
+        }
+      }
+    }
+
+    for (int i = 0; i <= 3; i++) {
+      if (quadro[4 + i] == 0) {
+        last_bit = 0;
+        inicio_do_quadro[(2 * i)] = last_bit_manchester[0];
+        inicio_do_quadro[(2 * i) + 1] = last_bit_manchester[1];
+      } else {
+        last_bit = 1;
+        last_bit_manchester = ~last_bit_manchester;
+        inicio_do_quadro[(2 * i)] = last_bit_manchester[0];
+        inicio_do_quadro[(2 * i) + 1] = last_bit_manchester[1];
+      }
+    }
+
+
+    manchester_diferencial_quadros.push_back(fim_do_quadro);
+    manchester_diferencial_quadros.push_back(inicio_do_quadro);
+  }
+
+  return manchester_diferencial_quadros;
 }
 
 
