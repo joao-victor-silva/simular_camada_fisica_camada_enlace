@@ -205,11 +205,28 @@ void CamadaEnlaceDadosReceptoraEnquadramentoViolacaoDaCamadaFisica() {
 
 }
 
-void CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar() {
-
-}
-
 // Recepcao >> Controle de Erro
+
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>& quadro) {
+  int quantidade_de_ums = 0;
+  bool bit_de_paridade = quadro.back();
+
+  quadro.pop_back();
+  for (bool bit: quadro) {
+    if (bit) {
+      quantidade_de_ums += 1;
+    }
+  }
+
+  if ((quantidade_de_ums % 2 == 1 && bit_de_paridade) ||
+      (quantidade_de_ums % 2 == 0 && !bit_de_paridade)) {
+    std::cout << "Nao foram detectados problemas no quadro pelo bit de paridade par" << std::endl;
+  } else {
+    std::cout << "ATENCAO: FORAM detectados problemas no quadro pelo bit de paridade par" << std::endl;
+  }
+
+  return quadro;
+}
 
 void CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar() {
 

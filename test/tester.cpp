@@ -332,7 +332,7 @@ TEST_CASE("O quadro 001001110 deve retornar 01001110 como resultado do \
 
   std::vector<bool> quadro;
   std::vector<bool> quadro_esperado;
-  std::vector<bool> quadro_com_paridade_par;
+  std::vector<bool> quadro_sem_paridade_par;
 
   quadro.push_back(false);
   quadro.push_back(true);
@@ -364,5 +364,4 @@ TEST_CASE("O quadro 001001110 deve retornar 01001110 como resultado do \
   REQUIRE(quadro_esperado[5] == quadro_sem_paridade_par[5]);
   REQUIRE(quadro_esperado[6] == quadro_sem_paridade_par[6]);
   REQUIRE(quadro_esperado[7] == quadro_sem_paridade_par[7]);
-  REQUIRE(quadro_esperado[8] == quadro_sem_paridade_par[8]);
 }

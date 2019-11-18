@@ -35,10 +35,10 @@ void CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres();
 void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes();
 void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits();
 void CamadaEnlaceDadosReceptoraEnquadramentoViolacaoDaCamadaFisica();
-void CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar();
 
 // Recepcao >> Controle de Erro
 
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>&);
 void CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar();
 void CamadaEnlaceDadosReceptoraControleDeErroCRC();
 void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming();
