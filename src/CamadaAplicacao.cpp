@@ -14,23 +14,31 @@ void AplicacaoTransmissora(int tipo_de_codificacao) {
 }
 
 void CamadaDeAplicacaoTransmissora(std::string& mensagem, int tipo_de_codificacao) {
-  std::vector<std::bitset<8>> quadros;
+  std::vector<bool> quadros;
   for (long unsigned int i = 0; i < mensagem.size(); i++) {
     std::bitset<8> bits_da_letra(mensagem[i]);
-    quadros.push_back(bits_da_letra);
+    for (int j = 0; j < 8; j++) {
+      if (bits_da_letra[j] == 0b1) {
+        quadros.push_back(true);
+      } else {
+        quadros.push_back(false);
+      }
+    }
   }
-
 
   CamadaFisicaTransmissora(quadros, tipo_de_codificacao);
 }
 
-void CamadaDeAplicacaoReceptora(std::vector<std::bitset<8>>& quadros) {
+void CamadaDeAplicacaoReceptora(std::vector<bool>& quadros) {
   std::string mensagem = "";
-  for (std::bitset<8>& bits_da_letra: quadros) {
+  for (unsigned int i = 0; i < quadros.size() / 8; i++) {
+    std::bitset<8> bits_da_letra;
+    for (int j = 0; j < 8; j++) {
+      bits_da_letra[j] = quadros[(i * 8) + j] ? 0b1 : 0b0;
+    }
     unsigned long int ascii_letra = bits_da_letra.to_ulong();
     mensagem.push_back((char) ascii_letra);
   }
-
   AplicacaoReceptora(mensagem);
 }
 

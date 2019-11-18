@@ -1,16 +1,15 @@
-#include <bitset>
 #include <vector>
 
 // Transmissao
 
-void CamadaFisicaTransmissora(std::vector<std::bitset<8>>&, int);
-std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<std::bitset<8>>&);
-std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<std::bitset<8>>&);
-std::vector<std::bitset<8>> CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(std::vector<std::bitset<8>>&);
+void CamadaFisicaTransmissora(std::vector<bool>&, int);
+std::vector<bool> CamadaFisicaTransmissoraCodificacaoBinaria(std::vector<bool>&);
+std::vector<bool> CamadaFisicaTransmissoraCodificacaoManchester(std::vector<bool>&);
+std::vector<bool> CamadaFisicaTransmissoraCodificacaoManchesterDiferencial(std::vector<bool>&);
 
 // Recepcao
 
-void CamadaFisicaReceptora(std::vector<std::bitset<8>>&, int);
-std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<std::bitset<8>>&);
-std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<std::bitset<8>>&);
-std::vector<std::bitset<8>> CamadaFisicaReceptoraDecodificacaoManchesterDiferencial(std::vector<std::bitset<8>>&);
+void CamadaFisicaReceptora(std::vector<bool>&, int);
+std::vector<bool> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<bool>&);
+std::vector<bool> CamadaFisicaReceptoraDecodificacaoManchester(std::vector<bool>&);
+std::vector<bool> CamadaFisicaReceptoraDecodificacaoManchesterDiferencial(std::vector<bool>&);

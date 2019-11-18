@@ -7,7 +7,7 @@ TARGET := bin/Simulador
 
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-TEST_SOURCES := $(shell find $(SRCDIR) -type f -name Camada*.$(SRCEXT))
+TEST_SOURCES := $(shell find $(SRCDIR) -type f \( -iname "*.$(SRCEXT)" ! -iname "Simulador.cpp" \))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 TEST_OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(TEST_SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -Wall
