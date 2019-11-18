@@ -1,16 +1,20 @@
+#include <vector>
+#include <bitset>
+#include "CamadaFisica.h"
+
 // Transmissao
 
-void CamadaEnlaceDadosTransmissora();
-void CamadaEnlaceDadosTransmissoraEnquadramento();
-void CamadaEnlaceDadosTransmissoraControleDeErro();
-void CamadaEnlaceDadosTransmissoraControleDeFluxo();
+void CamadaEnlaceDadosTransmissora(std::vector<bool>& quadros);
+void CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>& quadros);
+void CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>& quadros);
+void CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>& quadros);
 
 // Transmissao >> Enquadramento
 
-void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres();
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes();
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits();
-void CamadaEnlaceDadosTransmissoraEnquadramentoViolacaoDaCamadaFisica();
+void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>& quadro);
+void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro);
+void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro);
+void CamadaEnlaceDadosTransmissoraEnquadramentoViolacaoDaCamadaFisica(std::vector<bool>& quadro);
 
 // Transmissao >> Controle de Erro
 
