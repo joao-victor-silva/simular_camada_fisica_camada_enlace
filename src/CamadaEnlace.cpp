@@ -119,7 +119,7 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>&
 	for (int i = 0; i < quadro.size(); i++) {
 		if (seq == 5) {										//Se encontrou uma sequencia com 5 uns, insira um zero
 			quadroEnquadrado.push_back(0);
-			seq = 0;				
+			seq = 0;
 		}
 		if (quadro[i] == 1)									//Se encontrou um 1, soma 1 na sequencia
 			seq++;
@@ -139,8 +139,21 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoViolacaoDaCamadaFisica(std::vecto
 
 // Transmissao >> Controle de Erro
 
-void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar() {
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<bool>& quadro) {
+  int quantidade_de_ums = 0;
+  for (bool bit: quadro) {
+    if (bit) {
+      quantidade_de_ums += 1;
+    }
+  }
 
+  if (quantidade_de_ums % 2 == 1) {
+    quadro.push_back(true);
+  } else {
+    quadro.push_back(false);
+  }
+
+  return quadro;
 }
 
 

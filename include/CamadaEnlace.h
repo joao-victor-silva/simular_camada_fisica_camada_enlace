@@ -1,5 +1,4 @@
 #include <vector>
-#include <bitset>
 #include "CamadaFisica.h"
 
 // Transmissao
@@ -18,7 +17,7 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoViolacaoDaCamadaFisica(std::vecto
 
 // Transmissao >> Controle de Erro
 
-void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar();
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<bool>&);
 void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar();
 void CamadaEnlaceDadosTransmissoraControleDeErroCRC();
 void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming();
