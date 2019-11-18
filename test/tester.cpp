@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "CamadaFisica.h"
+#include "CamadaEnlace.h"
 
 TEST_CASE("O quadro 01001110 deve retornar 01001110 na codificacao \
     binaria", "[codificacao]") {
@@ -284,4 +285,44 @@ TEST_CASE("O quadro 01011010 10011001 na codificacao de \
   REQUIRE(quadro_esperado[5] == decodificado_quadros[5]);
   REQUIRE(quadro_esperado[6] == decodificado_quadros[6]);
   REQUIRE(quadro_esperado[7] == decodificado_quadros[7]);
+}
+
+TEST_CASE("O quadro 01001110 deve retornar 001001110 como resultado do \
+    controle de erro com bit de paridade par", "[enquadramento]") {
+
+  std::vector<bool> quadro;
+  std::vector<bool> quadro_esperado;
+  std::vector<bool> quadro_com_paridade_par;
+
+  quadro.push_back(false);
+  quadro.push_back(true);
+  quadro.push_back(true);
+  quadro.push_back(true);
+  quadro.push_back(false);
+  quadro.push_back(false);
+  quadro.push_back(true);
+  quadro.push_back(false);
+
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(false);
+
+  quadro_com_paridade_par = CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
+
+  REQUIRE(quadro_com_paridade_par.size() == 9);
+  REQUIRE(quadro_esperado[0] == quadro_com_paridade_par[0]);
+  REQUIRE(quadro_esperado[1] == quadro_com_paridade_par[1]);
+  REQUIRE(quadro_esperado[2] == quadro_com_paridade_par[2]);
+  REQUIRE(quadro_esperado[3] == quadro_com_paridade_par[3]);
+  REQUIRE(quadro_esperado[4] == quadro_com_paridade_par[4]);
+  REQUIRE(quadro_esperado[5] == quadro_com_paridade_par[5]);
+  REQUIRE(quadro_esperado[6] == quadro_com_paridade_par[6]);
+  REQUIRE(quadro_esperado[7] == quadro_com_paridade_par[7]);
+  REQUIRE(quadro_esperado[8] == quadro_com_paridade_par[8]);
 }
