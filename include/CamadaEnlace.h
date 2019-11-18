@@ -18,7 +18,7 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoViolacaoDaCamadaFisica(std::vecto
 // Transmissao >> Controle de Erro
 
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar();
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(std::vector<bool>&);
 void CamadaEnlaceDadosTransmissoraControleDeErroCRC();
 void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming();
 

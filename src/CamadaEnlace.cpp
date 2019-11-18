@@ -157,8 +157,21 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std:
 }
 
 
-void CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar() {
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(std::vector<bool>& quadro) {
+  int quantidade_de_ums = 0;
+  for (bool bit: quadro) {
+    if (bit) {
+      quantidade_de_ums += 1;
+    }
+  }
 
+  if (quantidade_de_ums % 2 == 0) {
+    quadro.push_back(true);
+  } else {
+    quadro.push_back(false);
+  }
+
+  return quadro;
 }
 
 void CamadaEnlaceDadosTransmissoraControleDeErroCRC() {
