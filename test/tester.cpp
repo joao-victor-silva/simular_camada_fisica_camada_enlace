@@ -405,3 +405,42 @@ TEST_CASE("O quadro 01001110 deve retornar 101001110 como resultado do \
   REQUIRE(quadro_esperado[7] == quadro_com_paridade_impar[7]);
   REQUIRE(quadro_esperado[8] == quadro_com_paridade_impar[8]);
 }
+
+TEST_CASE("O quadro 101001110 deve retornar 01001110 como resultado do \
+    controle de erro com bit de paridade impar", "[enquadramento]") {
+
+  std::vector<bool> quadro;
+  std::vector<bool> quadro_esperado;
+  std::vector<bool> quadro_sem_paridade_impar;
+
+  quadro.push_back(false);
+  quadro.push_back(true);
+  quadro.push_back(true);
+  quadro.push_back(true);
+  quadro.push_back(false);
+  quadro.push_back(false);
+  quadro.push_back(true);
+  quadro.push_back(false);
+  quadro.push_back(false);
+
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(false);
+  quadro_esperado.push_back(true);
+  quadro_esperado.push_back(false);
+
+  quadro_sem_paridade_impar = CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(quadro);
+
+  REQUIRE(quadro_sem_paridade_impar.size() == 8);
+  REQUIRE(quadro_esperado[0] == quadro_sem_paridade_impar[0]);
+  REQUIRE(quadro_esperado[1] == quadro_sem_paridade_impar[1]);
+  REQUIRE(quadro_esperado[2] == quadro_sem_paridade_impar[2]);
+  REQUIRE(quadro_esperado[3] == quadro_sem_paridade_impar[3]);
+  REQUIRE(quadro_esperado[4] == quadro_sem_paridade_impar[4]);
+  REQUIRE(quadro_esperado[5] == quadro_sem_paridade_impar[5]);
+  REQUIRE(quadro_esperado[6] == quadro_sem_paridade_impar[6]);
+  REQUIRE(quadro_esperado[7] == quadro_sem_paridade_impar[7]);
+}

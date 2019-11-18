@@ -39,6 +39,6 @@ void CamadaEnlaceDadosReceptoraEnquadramentoViolacaoDaCamadaFisica();
 // Recepcao >> Controle de Erro
 
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar();
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::vector<bool>&);
 void CamadaEnlaceDadosReceptoraControleDeErroCRC();
 void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming();
