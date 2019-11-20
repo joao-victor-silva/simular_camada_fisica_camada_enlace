@@ -526,8 +526,11 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::
 
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
 	std::vector<bool> quadroEnquadrado = quadro;
+	for (int i = 1; i < quadro.size(); i *= 2) {
+		quadro[i - 1] = 0;
+	}
 	for (unsigned int i = 0; i < quadro.size(); i++) {
-		if (log2(i) != (int)log2(i)) {
+		if (log2(i) != (int)log2(i)) {												//Refaz o hamming no quadro
 			int j = 1;
 			int icopia = i;
 			while (icopia && quadro[i]) {
@@ -540,13 +543,12 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::v
 		}
 	}
 	for (int i = 1; i < quadro.size(); i *= 2) {
-		if (quadro[i - 1] == quadroEnquadrado[i-1]) {
+		if (quadro[i - 1] != quadroEnquadrado[i-1]) {
 			std::cout << "Erro no quadro. Bit de paridade: " << i << std::endl;
 		}
 	}
 	for (int i = 1, j = 0; i < quadro.size(); i *= 2, j++) {
 		quadro.erase(quadro.begin() + i - j - 1);
 	}
-
-	return quadroEnquadrado;
+	return quadro;
 }
