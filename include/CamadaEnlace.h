@@ -3,30 +3,30 @@
 
 // Transmissao
 
-void CamadaEnlaceDadosTransmissora(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>&);
+void CamadaEnlaceDadosTransmissora(std::vector<bool>&, int, int, int, int);
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>&, int);
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>&, int);
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>&);
 
 // Transmissao >> Enquadramento
 
-void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
 
 // Transmissao >> Controle de Erro
 
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<bool>&);
 
 // Recepcao
 
-void CamadaEnlaceDadosReceptora(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraEnquadramento(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraControleDeErro(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraControleDeFluxo(std::vector<bool>&);
+void CamadaEnlaceDadosReceptora(std::vector<bool>&, int, int, int);
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramento(std::vector<bool>&, int);
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErro(std::vector<bool>&, int);
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeFluxo(std::vector<bool>&);
 
 // Recepcao >> Enquadramento
 
@@ -39,7 +39,7 @@ void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>&);
 
 
 

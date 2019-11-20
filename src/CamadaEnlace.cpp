@@ -1,45 +1,65 @@
 #include "CamadaEnlace.h"
+#include "CamadaFisica.h"
+#include "CamadaAplicacao.h"
 #include <iostream>
+#include <bitset>
 
 // Transmissao
 
-void CamadaEnlaceDadosTransmissora(std::vector<bool>& quadro) {
-	CamadaEnlaceDadosTransmissoraEnquadramento(quadro);
-	CamadaEnlaceDadosTransmissoraControleDeErro(quadro);
-	CamadaEnlaceDadosTransmissoraControleDeFluxo(quadro);
-	//CamadaFisicaTransmissora();
+void CamadaEnlaceDadosTransmissora(std::vector<bool>& quadro, int tipo_de_enquadramento,
+                                   int tipo_de_controle_de_erro, int tipo_de_codificacao, int percentual_de_erro) {
+  std::vector<bool> quadro_enquadrado = CamadaEnlaceDadosTransmissoraEnquadramento(quadro, tipo_de_enquadramento);
+  std::vector<bool> quadro_com_controle_de_erro = CamadaEnlaceDadosTransmissoraControleDeErro(quadro_enquadrado, tipo_de_controle_de_erro);
+  std::vector<bool> quadro_com_controle_de_fluxo = CamadaEnlaceDadosTransmissoraControleDeFluxo(quadro_com_controle_de_erro);
+	CamadaFisicaTransmissora(quadro_com_controle_de_fluxo,
+                           tipo_de_enquadramento, tipo_de_controle_de_erro,
+                           tipo_de_codificacao, percentual_de_erro);
 }
 
-void CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>& quadro) {
-	unsigned int tipoDeEnquadramento = 2;
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>& quadro, int tipoDeEnquadramento) {
 	std::vector<bool> quadroEnquadrado;
 	switch (tipoDeEnquadramento) {
 	case 0:
-		CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(quadro);
-		quadroEnquadrado = quadro;
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(quadro);
 		break;
 	case 1:
-		CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(quadro);
-		quadroEnquadrado = quadro;
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(quadro);
 		break;
 	case 2:
-		CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(quadro);
-		quadroEnquadrado = quadro;
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(quadro);
 		break;
 	}
+
+  return quadroEnquadrado;
 }
 
-void CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>& quadro, int tipo_de_controle_de_erro) {
+	std::vector<bool> quadroEnquadrado;
+	switch (tipo_de_controle_de_erro) {
+	case 0:
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
+		break;
+	case 1:
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(quadro);
+		break;
+	case 2:
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+		break;
+	case 3:
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(quadro);
+		break;
+	}
 
+  return quadroEnquadrado;
 }
 
-void CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>& quadro) {
-
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>& quadro) {
+  return quadro;
 }
 
 // Transmissao >> Enquadramento
 
-void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>& quadro) {
 	std::vector<bool> quadroEnquadrado;						//Quadro onde sera montado o quadro apos contagem
 	std::vector<bool> contadorBitsTemp;						//Quadro que guardara o numero de bits que compoe o quadro
 	int tamanhoQuadro = quadro.size() / 8;					//Variavel que guardara temporariamente o numero de bits do quadro
@@ -52,15 +72,19 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<
 	while (contadorBitsTemp.size() < 8) {
 		contadorBitsTemp.push_back(0);
 	}
-	reverse(contadorBitsTemp.begin(), contadorBitsTemp.end());
-	quadroEnquadrado = contadorBitsTemp;					//Insere o contador no quadro temporario
+	// reverse(contadorBitsTemp.begin(), contadorBitsTemp.end());
+	// quadroEnquadrado = contadorBitsTemp;					//Insere o contador no quadro temporario
+  for (unsigned int i = contadorBitsTemp.size() - 1; i >= 0; i--) {  //Insere o contador no quadro temporario
+    quadroEnquadrado.push_back(contadorBitsTemp[i]);
+  }
+
 	for (bool bit : quadro) {								//Insere bit a bit o quadro no quadro temporario
 		quadroEnquadrado.push_back(bit);
 	}
-	quadro = quadroEnquadrado;								//Coloca o quadro temporario montado no quadro
+	return quadroEnquadrado;								//Coloca o quadro temporario montado no quadro
 }
 
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro) {
 	bool flag[] = { 0,0,0,0,1,1,1,1 };						//Definindo a sequencia de flag
 	bool esc[] = { 0,0,1,1,0,0,1,1 };						//Definindo a sequencia de escape
 	bool charalloc[8];										//Alocando espaco para a verificacao do char
@@ -69,8 +93,8 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>
 	for (bool bit : flag) {									//Pushando a flag de inicio do quadro
 		quadroEnquadrado.push_back(bit);
 	}
-	for (int i = 0; i < quadro.size(); i++) {				//For para verificar bit a bit
-		for (int j = 0; i < quadro.size() && j < 8; i++, j++) {	//For para capturar char a char
+	for (unsigned int i = 0; i < quadro.size(); i++) {				//For para verificar bit a bit
+		for (unsigned int j = 0; i < quadro.size() && j < 8; i++, j++) {	//For para capturar char a char
 			charalloc[j] = quadro[i];
 		}
 		i--;
@@ -103,17 +127,17 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>
 	for (bool bit : flag) {
 		quadroEnquadrado.push_back(bit);					//Insere-se a flag final do quadro
 	}
-	quadro = quadroEnquadrado;
+	return quadroEnquadrado;
 }
 
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro) {
 	bool flag[] = { 0,1,1,1,1,1,1,0 };						//Definindo a flag de inicio e fim
 	int seq = 0;											//variavel que guardara sequencias de 1
 	std::vector<bool> quadroEnquadrado;
 	for (bool bit : flag) {
 		quadroEnquadrado.push_back(bit);					//Inserindo a flag de inicio
 	}
-	for (int i = 0; i < quadro.size(); i++) {
+	for (unsigned int i = 0; i < quadro.size(); i++) {
 		if (seq == 5) {										//Se encontrou uma sequencia com 5 uns, insira um zero
 			quadroEnquadrado.push_back(0);
 			seq = 0;
@@ -127,12 +151,13 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>&
 	for (bool bit : flag) {									//Inserindo a flag de fim
 		quadroEnquadrado.push_back(bit);
 	}
-	quadro = quadroEnquadrado;
+	return quadroEnquadrado;
 }
 
 // Transmissao >> Controle de Erro
 
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<bool>& quadro) {
+  // conta o numero de bits 1 no quadro e se o valor for impar, adiciona um 1, senao adiciona um 0 no final do quadro
 	int quantidade_de_ums = 0;
 	for (bool bit : quadro) {
 		if (bit) {
@@ -141,9 +166,10 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std:
 	}
 
 	if (quantidade_de_ums % 2 == 1) {
+    // adiciona 1 ao final do quadro
 		quadro.push_back(true);
-	}
-	else {
+	} else {
+    // adiciona 0 ao final do quadro
 		quadro.push_back(false);
 	}
 
@@ -152,6 +178,7 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std:
 
 
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(std::vector<bool>& quadro) {
+  // conta o numero de bits 1 no quadro e se o valor for par, adiciona um 1, senao adiciona um 0 no final do quadro
 	int quantidade_de_ums = 0;
 	for (bool bit : quadro) {
 		if (bit) {
@@ -160,9 +187,10 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(st
 	}
 
 	if (quantidade_de_ums % 2 == 0) {
+    // adiciona 1 ao final do quadro
 		quadro.push_back(true);
-	}
-	else {
+	} else {
+    // adiciona 0 ao final do quadro
 		quadro.push_back(false);
 	}
 
@@ -243,7 +271,7 @@ std::vector<bool> XOR(std::vector<bool>& x, std::vector<bool>& y) {
 
 }
 
-void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming() {
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
 	std::vector<bool> quadroEnquadrado;									//Quadro temporário para efetuar as operacoes
 	quadroEnquadrado.push_back(0);										//Pushando os dois primeiros bits de paridade
 	quadroEnquadrado.push_back(0);
@@ -272,42 +300,50 @@ void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming() {
 
 // Recepcao
 
-void CamadaEnlaceDadosReceptora(std::vector<bool>& quadro) {
-	CamadaEnlaceDadosReceptoraControleDeFluxo(quadro);
-	CamadaEnlaceDadosReceptoraControleDeErro(quadro);
-	CamadaEnlaceDadosReceptoraEnquadramento(quadro);
-}
-
-void CamadaEnlaceDadosReceptoraEnquadramento(std::vector<bool>& quadro) {
-	unsigned int tipoDeEnquadramento = 2;
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramento(std::vector<bool>& quadro, int tipoDeEnquadramento) {
 	std::vector<bool> quadroEnquadrado;
 	switch (tipoDeEnquadramento) {
 	case 0:
-		CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(quadro);
-		quadroEnquadrado = quadro;
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(quadro);
 		break;
 	case 1:
-		CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(quadro);
-		quadroEnquadrado = quadro;
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(quadro);
 		break;
 	case 2:
-		CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(quadro);
-		quadroEnquadrado = quadro;
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(quadro);
 		break;
 	}
+
+  return quadroEnquadrado;
 }
 
-void CamadaEnlaceDadosReceptoraControleDeErro(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErro(std::vector<bool>& quadro, int tipo_de_controle_de_erro) {
+	std::vector<bool> quadroEnquadrado;
+	switch (tipo_de_controle_de_erro) {
+	case 0:
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(quadro);
+		break;
+	case 1:
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(quadro);
+		break;
+	case 2:
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraControleDeErroCRC(quadro);
+		break;
+	case 3:
+		quadroEnquadrado = CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(quadro);
+		break;
+	}
 
+  return quadroEnquadrado;
 }
 
-void CamadaEnlaceDadosReceptoraControleDeFluxo(std::vector<bool>& quadro) {
-
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeFluxo(std::vector<bool>& quadro) {
+  return quadro;
 }
 
 // Recepcao >> Enquadramento
 
-void CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(std::vector<bool>& quadro) {
 	std::bitset<8> guardaContadorTemp;									//Variavel para guardar o contador temporariamente
 	unsigned long int tamanhoQuadro = 0;								//Inteiro onde sera convertido o contador pra inteiro
 	for (int i = 0; i < 8; i++) {										//Pegando os 8 bits que formam o contador
@@ -318,9 +354,11 @@ void CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(std::vector<boo
 	if (quadro.size() / 8 != tamanhoQuadro) {							//Caso sejam diferentes, significa que o contador está errado
 		std::cout << "Contagem errada dos caracteres" << std::endl;
 	}
+
+	return quadro;
 }
 
-void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro) {
 	std::vector<bool> charTemp;											//Variavel para guardar o byte temporariamente
 	bool flag[] = { 0,0,0,0,1,1,1,1 };									//Sequencia de flag de inicio/fim
 	bool esc[] = { 0,0,1,1,0,0,1,1 };									//Sequencia de escape
@@ -359,9 +397,11 @@ void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>& q
 			}
 		}
 	}
+
+	return quadro;
 }
 
-void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro) {
+	std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro) {
 	std::vector<bool> charTemp;											//Variavel para guardar o byte temporariamente
 	bool flag[] = { 0,1,1,1,1,1,1,0 };									//Definindo a sequencia de flag
 	bool continua = true;
@@ -391,6 +431,8 @@ void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>& qu
 			continua = false;											//o loop finalizado.
 		}
 	}
+
+	return quadro;
 }
 
 // Recepcao >> Controle de Erro
@@ -481,7 +523,8 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::
   return quadro;
 }
 
-void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
+	return quadro;
 	for (unsigned int i = 0; i < quadro.size(); i++) {
 		if (log2(i) != (int)log2(i)) {
 			int j = 1;

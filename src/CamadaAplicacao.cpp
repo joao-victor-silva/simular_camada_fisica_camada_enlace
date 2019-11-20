@@ -5,15 +5,20 @@
 
 #include "CamadaAplicacao.h"
 #include "CamadaFisica.h"
+#include "CamadaEnlace.h"
 
-void AplicacaoTransmissora(int tipo_de_codificacao) {
+void AplicacaoTransmissora(int tipo_de_enquadramento, int tipo_de_controle_de_erro,
+                           int tipo_de_codificacao, int percentual_de_erro) {
   std::string mensagem;
   std::cout << "Digite uma mensagem" << std::endl;
   std::getline(std::cin, mensagem);
-  CamadaDeAplicacaoTransmissora(mensagem, tipo_de_codificacao);
+  CamadaDeAplicacaoTransmissora(mensagem, tipo_de_enquadramento, tipo_de_controle_de_erro,
+                                tipo_de_codificacao, percentual_de_erro);
 }
 
-void CamadaDeAplicacaoTransmissora(std::string& mensagem, int tipo_de_codificacao) {
+void CamadaDeAplicacaoTransmissora(std::string& mensagem, int tipo_de_enquadramento,
+                                   int tipo_de_controle_de_erro, int tipo_de_codificacao,
+                                   int percentual_de_erro) {
   std::vector<bool> quadros;
   for (long unsigned int i = 0; i < mensagem.size(); i++) {
     std::bitset<8> bits_da_letra(mensagem[i]);
@@ -26,10 +31,33 @@ void CamadaDeAplicacaoTransmissora(std::string& mensagem, int tipo_de_codificaca
     }
   }
 
-  CamadaFisicaTransmissora(quadros, tipo_de_codificacao);
+  std::cout << std::endl;
+  std::cout << "Mensagem em binario a ser enviada: \t";
+  for (unsigned int i = 0; i < quadros.size(); i++) {
+    if (quadros[i]) {
+      std::cout << "1";
+    } else {
+      std::cout << "0";
+    }
+  }
+  std::cout << std::endl;
+
+  CamadaEnlaceDadosTransmissora(quadros, tipo_de_enquadramento, tipo_de_controle_de_erro,
+                           tipo_de_codificacao, percentual_de_erro);
 }
 
 void CamadaDeAplicacaoReceptora(std::vector<bool>& quadros) {
+  std::cout << std::endl;
+  std::cout << "Mensagem em binario recebida: \t\t";
+  for (unsigned int i = 0; i < quadros.size(); i++) {
+    if (quadros[i]) {
+      std::cout << "1";
+    } else {
+      std::cout << "0";
+    }
+  }
+
+  std::cout << std::endl;
   std::string mensagem = "";
   for (unsigned int i = 0; i < quadros.size() / 8; i++) {
     std::bitset<8> bits_da_letra;
@@ -43,5 +71,5 @@ void CamadaDeAplicacaoReceptora(std::vector<bool>& quadros) {
 }
 
 void AplicacaoReceptora(std::string& mensagem) {
-  std::cout << "A mensagem recebida foi: " << mensagem << std::endl;
+  std::cout << "A mensagem recebida foi: " << std::endl << mensagem << std::endl;
 }
