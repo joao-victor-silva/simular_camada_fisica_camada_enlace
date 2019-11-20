@@ -19,7 +19,7 @@ void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>&
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<bool>&);
-void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming();
+void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<bool>&);
 
 // Recepcao
 
@@ -39,7 +39,7 @@ void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::vector<bool>&);
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming();
+void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>&);
 
 
 
