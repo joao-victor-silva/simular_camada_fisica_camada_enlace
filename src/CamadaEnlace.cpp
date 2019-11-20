@@ -244,7 +244,30 @@ std::vector<bool> XOR(std::vector<bool>& x, std::vector<bool>& y) {
 }
 
 void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming() {
-
+	std::vector<bool> quadroEnquadrado;									//Quadro temporário para efetuar as operacoes
+	quadroEnquadrado.push_back(0);										//Pushando os dois primeiros bits de paridade
+	quadroEnquadrado.push_back(0);
+	for (unsigned int i = 3, j = 3; i < quadro.size() + 3; i++, j++) {	//Pushando os bits do quadro
+		if (log2(j) == (int)log2(j)) {									//Caso seja um bit de controle, pushar um zero
+			quadroEnquadrado.push_back(0);
+			j++;
+		}
+		quadroEnquadrado.push_back(quadro[i - 3]);
+	}
+	for (unsigned int i = 3; i < quadro.size(); i++) {
+		if (log2(i) != (int)log2(i)) {									//Se nao for um bit de controle
+			int icopia = i;												//Copia do i para poder fazer operacoes
+			int j = 1;													//Variavel que diz qual eh o bit de controle
+			while (icopia && quadro[i]) {								//Enquanto a copia do i nao zerar, deve fazer
+				if (icopia % 2 && quadro[i]) {							//um shift de um bit e ver se o carry eh 1 ou 0
+					quadroEnquadrado[j - 1] = !quadroEnquadrado[j - 1];	//visto que isso diz quais bits de mensagem
+				}														//participa da constituicao dos bits de controle
+				j *= 2;													//Pula para o proximo bit de controle
+				icopia /= 2;											//Desloca os bits novamente
+			}
+		}																//Inverte-se o bit a cada 1 para manter a paridade
+	}
+	quadro = quadroEnquadrado;											//Atribui o quadro temporario ao quadro
 }
 
 // Recepcao
