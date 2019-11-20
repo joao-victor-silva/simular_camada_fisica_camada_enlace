@@ -169,7 +169,77 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(st
 	return quadro;
 }
 
-void CamadaEnlaceDadosTransmissoraControleDeErroCRC() {
+std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCRC(std::vector<bool>& quadro) {
+  // criar um quadro auxiliar com zeros no final para o calculo do crc do quadro
+  std::vector<bool> quadro_aux = quadro;
+  for (unsigned int i = 0; i < quadro_aux.size(); i++) {
+    std::cout << quadro_aux[i];
+  }
+  std::cout << std::endl << "zeros adicionais: " << std::endl;
+  for (int i = 0; i < 32; i++) {
+    quadro_aux.push_back(false);
+    std::cout << "0";
+  }
+  std::cout << std::endl;
+
+  // calcula o crc do quadro
+  std::vector<bool> crc_resto = DivisaoModulo2(quadro_aux);
+  for (unsigned int i = 0; i < crc_resto.size(); i++) {
+    std::cout << crc_resto[i];
+  }
+  std::cout << std::endl;
+
+  // adiciona o crc ao final do quadro
+  for (unsigned int i = 0; i < crc_resto.size(); i++) {
+    quadro.push_back(crc_resto[i]);
+  }
+
+  return quadro;
+}
+
+std::vector<bool> DivisaoModulo2(std::vector<bool>& dividendo) {
+  // 0x 01 04 C1 1D B7
+  // 1 0000 0100 1100 0001 0001 1101 1011 0111
+	std::vector<bool> crc32 = {1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,1,1,1,0,1,1,0,1,1,0,1,1,1};
+  unsigned int ultimo_indice_xor = crc32.size();
+
+  std::vector<bool> auxiliar;
+  for (unsigned int i = 0; i < ultimo_indice_xor; i++) {
+    auxiliar.push_back(dividendo[i]);
+  }
+
+  while (ultimo_indice_xor < dividendo.size()) {
+    if (auxiliar[0]) {
+      auxiliar = XOR(crc32, auxiliar);
+      auxiliar.push_back(dividendo[ultimo_indice_xor]);
+    } else {
+      std::vector<bool> div_todos_zeros(ultimo_indice_xor, false);
+      auxiliar = XOR(div_todos_zeros, auxiliar);
+      auxiliar.push_back(dividendo[ultimo_indice_xor]);
+    }
+    ultimo_indice_xor++;
+  }
+
+  if (auxiliar[0]) {
+    auxiliar = XOR(crc32, auxiliar);
+  } else {
+    std::vector<bool> div_todos_zeros(ultimo_indice_xor, false);
+    auxiliar = XOR(div_todos_zeros, auxiliar);
+  }
+
+  return auxiliar;
+}
+
+std::vector<bool> XOR(std::vector<bool>& x, std::vector<bool>& y) {
+  std::vector<bool> xor_resultado;
+  for (unsigned int i = 1; i < y.size(); i++) {
+    if (x[i] == y[i]) {
+      xor_resultado.push_back(false);
+    } else {
+      xor_resultado.push_back(true);
+    }
+  }
+  return xor_resultado;
 
 }
 
@@ -346,8 +416,46 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::
 	return quadro;
 }
 
-void CamadaEnlaceDadosReceptoraControleDeErroCRC() {
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>& quadro) {
+  int quantidade_de_ums = 0;
+  bool bit_de_paridade = quadro.back();
 
+  quadro.pop_back();
+  for (bool bit: quadro) {
+    if (bit) {
+      quantidade_de_ums += 1;
+    }
+  }
+
+  if ((quantidade_de_ums % 2 == 1 && bit_de_paridade) ||
+      (quantidade_de_ums % 2 == 0 && !bit_de_paridade)) {
+    std::cout << "Nao foram detectados problemas no quadro pelo bit de paridade par" << std::endl;
+  } else {
+    std::cout << "ATENCAO: FORAM detectados problemas no quadro pelo bit de paridade par" << std::endl;
+  }
+
+  return quadro;
+}
+
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::vector<bool>& quadro) {
+  int quantidade_de_ums = 0;
+  bool bit_de_paridade = quadro.back();
+
+  quadro.pop_back();
+  for (bool bit: quadro) {
+    if (bit) {
+      quantidade_de_ums += 1;
+    }
+  }
+
+  if ((quantidade_de_ums % 2 == 0 && bit_de_paridade) ||
+      (quantidade_de_ums % 2 == 1 && !bit_de_paridade)) {
+    std::cout << "Nao foram detectados problemas no quadro pelo bit de paridade impar" << std::endl;
+  } else {
+    std::cout << "ATENCAO: FORAM detectados problemas no quadro pelo bit de paridade impar" << std::endl;
+  }
+
+  return quadro;
 }
 
 void CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming() {

@@ -444,3 +444,58 @@ TEST_CASE("O quadro 101001110 deve retornar 01001110 como resultado do \
   REQUIRE(quadro_esperado[6] == quadro_sem_paridade_impar[6]);
   REQUIRE(quadro_esperado[7] == quadro_sem_paridade_impar[7]);
 }
+
+TEST_CASE("O CRC32 da mensagem `12345`") {
+  std::vector<bool> quadro = {0,0,1,1,0,0,0,1,0,0,1,1,0,0,1,0,0,0,1,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,1,1,0,1,0,1};
+  std::vector<bool> crc_esperado = {1,1,1,1,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0,1,1};
+  std::vector<bool> quadro_crc;
+
+  std::vector<bool> quadro_esperado = quadro;
+  for (unsigned int i = 0; i < crc_esperado.size(); i++) {
+    quadro_esperado.push_back(crc_esperado[i]);
+  }
+
+  quadro_crc = CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+
+  REQUIRE(quadro_crc.size() == quadro_esperado.size());
+  for (unsigned int i = 0; i < quadro_esperado.size(); i++) {
+    REQUIRE(quadro_esperado[i] == quadro_crc[i]);
+  }
+}
+
+TEST_CASE("O CRC32 da mensagem `12345` ") {
+  std::vector<bool> quadro_esperado = {0,0,1,1,0,0,0,1,0,0,1,1,0,0,1,0,0,0,1,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,1,1,0,1,0,1};
+  std::vector<bool> crc = {1,1,1,1,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0,1,1};
+  std::vector<bool> quadro_sem_crc;
+
+  std::vector<bool> quadro = quadro_esperado;
+  for (unsigned int i = 0; i < crc.size(); i++) {
+    quadro.push_back(crc[i]);
+  }
+
+  quadro_sem_crc = CamadaEnlaceDadosReceptoraControleDeErroCRC(quadro);
+
+  REQUIRE(quadro_sem_crc.size() == quadro_esperado.size());
+  for (unsigned int i = 0; i < quadro_esperado.size(); i++) {
+    REQUIRE(quadro_esperado[i] == quadro_sem_crc[i]);
+  }
+}
+
+// TEST_CASE("0110 0101 1011 0100 0010 0000 0000 1111") {
+//   //0110 0101 1011 0100 0010 0000 0000 1111
+//   std::vector<bool> quadro = {1,0,0,1,0,0};
+//   std::vector<bool> crc_esperado = {0,0,1};
+//   std::vector<bool> quadro_crc;
+
+//   std::vector<bool> quadro_esperado = quadro;
+//   for (unsigned int i = 0; i < crc_esperado.size(); i++) {
+//     quadro_esperado.push_back(crc_esperado[i]);
+//   }
+
+//   quadro_crc = CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
+
+//   REQUIRE(quadro_crc.size() == quadro_esperado.size());
+//   for (unsigned int i = 0; i < quadro_esperado.size(); i++) {
+//     REQUIRE(quadro_esperado[i] == quadro_crc[i]);
+//   }
+// }
