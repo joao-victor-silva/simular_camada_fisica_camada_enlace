@@ -3,6 +3,7 @@
 #include "CamadaFisica.h"
 #include "MeioDeComunicacao.h"
 #include "CamadaAplicacao.h"
+#include "CamadaEnlace.h"
 
 // Transmissao
 
@@ -169,7 +170,8 @@ void CamadaFisicaReceptora(std::vector<bool>& quadros, int tipo_de_enquadramento
   }
   std::cout << std::endl;
 
-  CamadaDeAplicacaoReceptora(fluxo_de_bits);
+  CamadaEnlaceDadosReceptora(fluxo_de_bits, tipo_de_enquadramento, 
+        tipo_de_controle_de_erro, tipo_de_codificacao);
 }
 
 std::vector<bool> CamadaFisicaReceptoraDecodificacaoBinaria(std::vector<bool>& quadros_em_binario) {

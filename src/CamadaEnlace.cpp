@@ -4,6 +4,7 @@
 #include <iostream>
 #include <bitset>
 #include <cmath>
+#include <algorithm>
 
 // Transmissao
 
@@ -41,7 +42,7 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>&
 		quadroEnquadrado = CamadaEnlaceDadosTransmissoraControleDeErroBitParidadePar(quadro);
 		break;
 	case 1:
-		quadroEnquadrado = CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(quadro);
+		quadroEnquadrado = CamadaEnlaceDadosTransmissoraControleDeErroBitParidadeImpar(quadro);
 		break;
 	case 2:
 		quadroEnquadrado = CamadaEnlaceDadosTransmissoraControleDeErroCRC(quadro);
@@ -73,15 +74,14 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres
 	while (contadorBitsTemp.size() < 8) {
 		contadorBitsTemp.push_back(0);
 	}
-	// reverse(contadorBitsTemp.begin(), contadorBitsTemp.end());
-	// quadroEnquadrado = contadorBitsTemp;					//Insere o contador no quadro temporario
-  for (unsigned int i = contadorBitsTemp.size() - 1; i >= 0; i--) {  //Insere o contador no quadro temporario
-    quadroEnquadrado.push_back(contadorBitsTemp[i]);
-  }
+
+	reverse(contadorBitsTemp.begin(), contadorBitsTemp.end());
+	quadroEnquadrado = contadorBitsTemp;					//Insere o contador no quadro temporario
 
 	for (bool bit : quadro) {								//Insere bit a bit o quadro no quadro temporario
 		quadroEnquadrado.push_back(bit);
 	}
+
 	return quadroEnquadrado;								//Coloca o quadro temporario montado no quadro
 }
 
