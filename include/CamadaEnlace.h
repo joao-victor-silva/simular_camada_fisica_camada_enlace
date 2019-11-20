@@ -3,17 +3,16 @@
 
 // Transmissao
 
-void CamadaEnlaceDadosTransmissora(std::vector<bool>& quadros);
-void CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>& quadros);
-void CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>& quadros);
-void CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>& quadros);
+void CamadaEnlaceDadosTransmissora(std::vector<bool>&);
+void CamadaEnlaceDadosTransmissoraEnquadramento(std::vector<bool>&);
+void CamadaEnlaceDadosTransmissoraControleDeErro(std::vector<bool>&);
+void CamadaEnlaceDadosTransmissoraControleDeFluxo(std::vector<bool>&);
 
 // Transmissao >> Enquadramento
 
-void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>& quadro);
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro);
-void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro);
-void CamadaEnlaceDadosTransmissoraEnquadramentoViolacaoDaCamadaFisica(std::vector<bool>& quadro);
+void CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres(std::vector<bool>&);
+void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std::vector<bool>&);
+void CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
 
 // Transmissao >> Controle de Erro
 
@@ -24,17 +23,16 @@ void CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming();
 
 // Recepcao
 
-void CamadaEnlaceDadosReceptora();
-void CamadaEnlaceDadosReceptoraEnquadramento();
-void CamadaEnlaceDadosReceptoraControleDeErro();
-void CamadaEnlaceDadosReceptoraControleDeFluxo();
+void CamadaEnlaceDadosReceptora(std::vector<bool>&);
+void CamadaEnlaceDadosReceptoraEnquadramento(std::vector<bool>&);
+void CamadaEnlaceDadosReceptoraControleDeErro(std::vector<bool>&);
+void CamadaEnlaceDadosReceptoraControleDeFluxo(std::vector<bool>&);
 
 // Recepcao >> Enquadramento
 
-void CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres();
-void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes();
-void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits();
-void CamadaEnlaceDadosReceptoraEnquadramentoViolacaoDaCamadaFisica();
+void CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(std::vector<bool>&);
+void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>&);
+void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
 
 // Recepcao >> Controle de Erro
 
