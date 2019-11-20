@@ -524,7 +524,7 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::
 }
 
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
-	fstd::vector<bool> quadroEnquadrado = quadro;
+	std::vector<bool> quadroEnquadrado = quadro;
 	for (unsigned int i = 0; i < quadro.size(); i++) {
 		if (log2(i) != (int)log2(i)) {
 			int j = 1;
