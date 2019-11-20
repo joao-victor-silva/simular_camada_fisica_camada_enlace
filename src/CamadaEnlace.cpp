@@ -3,6 +3,7 @@
 #include "CamadaAplicacao.h"
 #include <iostream>
 #include <bitset>
+#include <cmath>
 
 // Transmissao
 
@@ -295,7 +296,7 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std
 			}
 		}																//Inverte-se o bit a cada 1 para manter a paridade
 	}
-	quadro = quadroEnquadrado;											//Atribui o quadro temporario ao quadro
+	return quadroEnquadrado;											//Atribui o quadro temporario ao quadro
 }
 
 // Recepcao
@@ -546,4 +547,6 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::v
 	for (int i = 1, j = 0; i < quadro.size(); i *= 2, j++) {
 		quadro.erase(quadro.begin() + i - j - 1);
 	}
+
+	return quadroEnquadrado;
 }
