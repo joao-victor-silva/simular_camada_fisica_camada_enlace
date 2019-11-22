@@ -66,7 +66,7 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres
 	std::vector<bool> contadorBitsTemp;						//Quadro que guardara o numero de bits que compoe o quadro
 	int tamanhoQuadro = quadro.size() / 8;					//Variavel que guardara temporariamente o numero de bits do quadro
 	tamanhoQuadro += 1;
-	std::cout << tamanhoQuadro << std::endl;
+	// std::cout << tamanhoQuadro << std::endl;
 	while (tamanhoQuadro) {									//Convertendo o tamanho para binario
 		contadorBitsTemp.push_back(tamanhoQuadro % 2);
 		tamanhoQuadro /= 2;
@@ -75,7 +75,7 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres
 		contadorBitsTemp.push_back(0);
 	}
 
-	reverse(contadorBitsTemp.begin(), contadorBitsTemp.end());
+	std::reverse(contadorBitsTemp.begin(), contadorBitsTemp.end());
 	quadroEnquadrado = contadorBitsTemp;					//Insere o contador no quadro temporario
 
 	for (bool bit : quadro) {								//Insere bit a bit o quadro no quadro temporario
@@ -269,7 +269,6 @@ std::vector<bool> XOR(std::vector<bool>& x, std::vector<bool>& y) {
     }
   }
   return xor_resultado;
-
 }
 
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
@@ -300,6 +299,14 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std
 }
 
 // Recepcao
+
+void CamadaEnlaceDadosReceptora(std::vector<bool>& quadro, int tipo_de_enquadramento, int tipo_de_controle_de_erro, int tipo_de_codificacao) {
+  std::vector<bool> quadro_com_controle_de_fluxo = CamadaEnlaceDadosReceptoraControleDeFluxo(quadro);
+  std::vector<bool> quadro_com_controle_de_erro = CamadaEnlaceDadosReceptoraControleDeErro(quadro_com_controle_de_fluxo, tipo_de_controle_de_erro);
+  std::vector<bool> quadro_enquadrado = CamadaEnlaceDadosReceptoraEnquadramento(quadro_com_controle_de_erro, tipo_de_enquadramento);
+
+  CamadaDeAplicacaoReceptora(quadro_enquadrado);
+}
 
 std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramento(std::vector<bool>& quadro, int tipoDeEnquadramento) {
 	std::vector<bool> quadroEnquadrado;
@@ -356,7 +363,7 @@ std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(st
 		std::cout << "Contagem errada dos caracteres" << std::endl;
 	}
 
-	return quadro;
+  return quadro;
 }
 
 std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>& quadro) {
@@ -398,11 +405,10 @@ std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::ve
 			}
 		}
 	}
-
-	return quadro;
+  return quadro;
 }
 
-	std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro) {
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>& quadro) {
 	std::vector<bool> charTemp;											//Variavel para guardar o byte temporariamente
 	bool flag[] = { 0,1,1,1,1,1,1,0 };									//Definindo a sequencia de flag
 	bool continua = true;
@@ -433,7 +439,7 @@ std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::ve
 		}
 	}
 
-	return quadro;
+  return quadro;
 }
 
 // Recepcao >> Controle de Erro
@@ -482,51 +488,35 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::
 	return quadro;
 }
 
-std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadePar(std::vector<bool>& quadro) {
-  int quantidade_de_ums = 0;
-  bool bit_de_paridade = quadro.back();
+std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<bool>& quadro) {
+  // calcula o crc do quadro
+  std::vector<bool> crc_resto = DivisaoModulo2(quadro);
 
-  quadro.pop_back();
-  for (bool bit: quadro) {
+  int quantidade_de_ums = 0;
+
+  for (bool bit: crc_resto) {
     if (bit) {
       quantidade_de_ums += 1;
     }
   }
 
-  if ((quantidade_de_ums % 2 == 1 && bit_de_paridade) ||
-      (quantidade_de_ums % 2 == 0 && !bit_de_paridade)) {
-    std::cout << "Nao foram detectados problemas no quadro pelo bit de paridade par" << std::endl;
+  if (quantidade_de_ums > 0) {
+    std::cout << "ATENCAO: FORAM detectados problemas no quadro pelo CRC" << std::endl;
   } else {
-    std::cout << "ATENCAO: FORAM detectados problemas no quadro pelo bit de paridade par" << std::endl;
+    std::cout << "Nao foram detectados problemas no quadro pelo CRC" << std::endl;
   }
 
-  return quadro;
-}
-
-std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroBitParidadeImpar(std::vector<bool>& quadro) {
-  int quantidade_de_ums = 0;
-  bool bit_de_paridade = quadro.back();
-
-  quadro.pop_back();
-  for (bool bit: quadro) {
-    if (bit) {
-      quantidade_de_ums += 1;
-    }
+  std::vector<bool> quadro_sem_crc;
+  for (unsigned int i = 0; i < quadro.size() - 32; i++) {
+    quadro_sem_crc.push_back(quadro[i]);
   }
 
-  if ((quantidade_de_ums % 2 == 0 && bit_de_paridade) ||
-      (quantidade_de_ums % 2 == 1 && !bit_de_paridade)) {
-    std::cout << "Nao foram detectados problemas no quadro pelo bit de paridade impar" << std::endl;
-  } else {
-    std::cout << "ATENCAO: FORAM detectados problemas no quadro pelo bit de paridade impar" << std::endl;
-  }
-
-  return quadro;
+  return quadro_sem_crc;
 }
 
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
 	std::vector<bool> quadroEnquadrado = quadro;
-	for (int i = 1; i < quadro.size(); i *= 2) {
+	for (unsigned int i = 1; i < quadro.size(); i *= 2) {
 		quadro[i - 1] = 0;
 	}
 	for (unsigned int i = 0; i < quadro.size(); i++) {
@@ -542,12 +532,12 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::v
 			}
 		}
 	}
-	for (int i = 1; i < quadro.size(); i *= 2) {
+	for (unsigned int i = 1; i < quadro.size(); i *= 2) {
 		if (quadro[i - 1] != quadroEnquadrado[i-1]) {
 			std::cout << "Erro no quadro. Bit de paridade: " << i << std::endl;
 		}
 	}
-	for (int i = 1, j = 0; i < quadro.size(); i *= 2, j++) {
+	for (unsigned int i = 1, j = 0; i < quadro.size(); i *= 2, j++) {
 		quadro.erase(quadro.begin() + i - j - 1);
 	}
 	return quadro;

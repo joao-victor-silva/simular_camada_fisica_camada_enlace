@@ -30,9 +30,9 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeFluxo(std::vector<bool>&);
 
 // Recepcao >> Enquadramento
 
-void CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>&);
-void CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoContagemDeCaracteres(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBytes(std::vector<bool>&);
+std::vector<bool> CamadaEnlaceDadosReceptoraEnquadramentoInsercaoDeBits(std::vector<bool>&);
 
 // Recepcao >> Controle de Erro
 
