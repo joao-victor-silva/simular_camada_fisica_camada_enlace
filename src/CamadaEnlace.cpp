@@ -8,6 +8,11 @@
 
 // Transmissao
 
+std::vector<bool> CalculaHamming(std::vector<std::vector<int>>& formula, std::vector<bool>& quadro, bool mostraFormula);
+std::vector<std::vector<int>> obtemFormulaDeHamming(std::vector<bool>& quadro);
+std::vector<bool> isolaBitsDeHamming(std::vector<bool>& quadro);
+std::vector<bool> removeBitsDeHamming(std::vector<bool>& quadro);
+
 void CamadaEnlaceDadosTransmissora(std::vector<bool>& quadro, int tipo_de_enquadramento,
                                    int tipo_de_controle_de_erro, int tipo_de_codificacao, int percentual_de_erro) {
   std::vector<bool> quadro_enquadrado = CamadaEnlaceDadosTransmissoraEnquadramento(quadro, tipo_de_enquadramento);
@@ -82,6 +87,12 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoContagemDeCaracteres
 		quadroEnquadrado.push_back(bit);
 	}
 
+	std::cout << "Quadro enquadrado: \t\t\t";
+	for (bool bit : quadroEnquadrado) {
+		bit ? std::cout << "1" : std::cout << "0";
+	}
+	std::cout << std::endl;
+
 	return quadroEnquadrado;								//Coloca o quadro temporario montado no quadro
 }
 
@@ -128,6 +139,13 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBytes(std:
 	for (bool bit : flag) {
 		quadroEnquadrado.push_back(bit);					//Insere-se a flag final do quadro
 	}
+
+	std::cout << "Quadro enquadrado: \t\t\t";
+	for (bool bit : quadroEnquadrado) {
+		bit ? std::cout << "1" : std::cout << "0";
+	}
+	std::cout << std::endl;
+
 	return quadroEnquadrado;
 }
 
@@ -152,6 +170,13 @@ std::vector<bool> CamadaEnlaceDadosTransmissoraEnquadramentoInsercaoDeBits(std::
 	for (bool bit : flag) {									//Inserindo a flag de fim
 		quadroEnquadrado.push_back(bit);
 	}
+
+	std::cout << "Quadro enquadrado: \t\t\t";
+	for (bool bit : quadroEnquadrado) {
+		bit ? std::cout << "1" : std::cout << "0";
+	}
+	std::cout << std::endl;
+
 	return quadroEnquadrado;
 }
 
@@ -272,30 +297,104 @@ std::vector<bool> XOR(std::vector<bool>& x, std::vector<bool>& y) {
 }
 
 std::vector<bool> CamadaEnlaceDadosTransmissoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
-	std::vector<bool> quadroEnquadrado;									//Quadro temporário para efetuar as operacoes
-	quadroEnquadrado.push_back(0);										//Pushando os dois primeiros bits de paridade
-	quadroEnquadrado.push_back(0);
-	for (unsigned int i = 3, j = 3; i < quadro.size() + 3; i++, j++) {	//Pushando os bits do quadro
-		if (log2(j) == (int)log2(j)) {									//Caso seja um bit de controle, pushar um zero
-			quadroEnquadrado.push_back(0);
-			j++;
+	// std::vector<bool> quadroEnquadrado;									//Quadro temporário para efetuar as operacoes
+	// quadroEnquadrado.push_back(0);										//Pushando os dois primeiros bits de paridade
+	// quadroEnquadrado.push_back(0);
+	// for (unsigned int i = 3, j = 3; i < quadro.size() + 3; i++, j++) {	//Pushando os bits do quadro
+	// 	if (log2(j) == (int)log2(j)) {									//Caso seja um bit de controle, pushar um zero
+	// 		quadroEnquadrado.push_back(0);
+	// 		j++;
+	// 	}
+	// 	quadroEnquadrado.push_back(quadro[i - 3]);
+	// }
+	// for (unsigned int i = 3; i < quadro.size(); i++) {
+	// 	if (log2(i) != (int)log2(i)) {									//Se nao for um bit de controle
+	// 		int icopia = i;												//Copia do i para poder fazer operacoes
+	// 		int j = 1;													//Variavel que diz qual eh o bit de controle
+	// 		while (icopia && quadro[i]) {								//Enquanto a copia do i nao zerar, deve fazer
+	// 			if (icopia % 2 && quadro[i]) {							//um shift de um bit e ver se o carry eh 1 ou 0
+	// 				quadroEnquadrado[j - 1] = !quadroEnquadrado[j - 1];	//visto que isso diz quais bits de mensagem
+	// 			}														//participa da constituicao dos bits de controle
+	// 			j *= 2;													//Pula para o proximo bit de controle
+	// 			icopia /= 2;											//Desloca os bits novamente
+	// 		}
+	// 	}																//Inverte-se o bit a cada 1 para manter a paridade
+	// }
+	// return quadroEnquadrado;											//Atribui o quadro temporario ao quadro
+
+	unsigned int contadorQuadro = 0;         // contador de 0 ate o quantidade de bits do quadro - 1
+	unsigned int contadorVerificacao = 0;    // quantidade de bits de verificacao
+	unsigned int contadorGeral = 1;          // contador de 3 ate o (quantidade de bits de verificacao + quantidade de bits do quadro) - 1 
+	std::vector<std::vector<int>> formula;
+	std::vector<bool> quadroComHamming;
+
+	// monta o quadro com hamming e as formulas dos bits de verificacao
+	while (contadorQuadro < quadro.size()) {
+		unsigned int potenciaDeDois = 1;
+		for (unsigned int i = 0; i < contadorVerificacao; i++) {
+			potenciaDeDois = potenciaDeDois * 2;
 		}
-		quadroEnquadrado.push_back(quadro[i - 3]);
-	}
-	for (unsigned int i = 3; i < quadro.size(); i++) {
-		if (log2(i) != (int)log2(i)) {									//Se nao for um bit de controle
-			int icopia = i;												//Copia do i para poder fazer operacoes
-			int j = 1;													//Variavel que diz qual eh o bit de controle
-			while (icopia && quadro[i]) {								//Enquanto a copia do i nao zerar, deve fazer
-				if (icopia % 2 && quadro[i]) {							//um shift de um bit e ver se o carry eh 1 ou 0
-					quadroEnquadrado[j - 1] = !quadroEnquadrado[j - 1];	//visto que isso diz quais bits de mensagem
-				}														//participa da constituicao dos bits de controle
-				j *= 2;													//Pula para o proximo bit de controle
-				icopia /= 2;											//Desloca os bits novamente
+
+		// se o contadorGeral for uma potencia de 2 
+		if (contadorGeral == potenciaDeDois) {
+			// adiciona um novo bit de verificacao (nova formula)
+			// p(2 ^ n)
+			std::vector<int> vetor;
+			formula.push_back(vetor);
+			// bitsDeVerificacao.push_back(false);
+			// adiciona bit de verificacao com valor 0, sera alterado apos o calculo utilizando as formulas
+			quadroComHamming.push_back(false);
+			contadorVerificacao++;
+		// se o contadorGeral NAO for uma potencia de 2 
+		} else {
+			// converte o contadorGeral em potencia de 2 (binario)
+			std::bitset<32> indiceEmBinario(contadorGeral);
+			for (int i = 0; i < 32; i++) {
+				// se o bit de indice i do contadorGeral for 1, o bit do quadro faz parte da formula do bit de verificacao de indice i
+				if (indiceEmBinario[i] == 0b1) {
+					formula[i].push_back(contadorGeral);
+				}
 			}
-		}																//Inverte-se o bit a cada 1 para manter a paridade
+			quadroComHamming.push_back(quadro[contadorQuadro]);
+			contadorQuadro++;
+		}
+
+		contadorGeral++;
 	}
-	return quadroEnquadrado;											//Atribui o quadro temporario ao quadro
+
+	std::cout << "quantidade de formulas: " << formula.size() << std::endl;
+
+	for (unsigned int i = 0; i < formula.size(); i++) {
+		// calcula o indice do bit de verificacao
+		unsigned int potenciaDeDois = 1;
+		for (unsigned int k = 0; k < i; k++) {
+			potenciaDeDois = potenciaDeDois * 2;
+		}
+
+		std::cout << "P" << potenciaDeDois << " = ";
+		bool bit = false;
+		for (unsigned int j = 0; j < formula[i].size(); j++) {
+			std::cout << "M" << formula[i][j] << " ";
+			if (quadroComHamming[formula[i][j] - 1]) {
+				bit = !bit;
+			}
+			if (j < formula[i].size() - 1) {
+				std::cout << "+ ";
+			}
+		}
+
+		std::cout << " => ";
+		if (bit) {
+			std::cout << "1";
+		} else {
+			std::cout << "0";
+		}
+		std::cout << std::endl;
+
+		quadroComHamming[potenciaDeDois - 1] = bit;
+	}
+
+	return quadroComHamming;
 }
 
 // Recepcao
@@ -515,30 +614,225 @@ std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCRC(std::vector<bool>&
 }
 
 std::vector<bool> CamadaEnlaceDadosReceptoraControleDeErroCodigoDeHamming(std::vector<bool>& quadro) {
-	std::vector<bool> quadroEnquadrado = quadro;
-	for (unsigned int i = 1; i < quadro.size(); i *= 2) {
-		quadro[i - 1] = 0;
+	std::vector<bool> bitsDeVerificacaoRecebidos;
+	std::vector<bool> bitsDeVerificacaoCalculados;
+	std::vector<bool> quadroSemHamming;
+	std::vector<std::vector<int>> formula;
+	std::vector<bool> quadroAuxiliar = quadro;
+	std::vector<bool> quadroCorrigido = quadro;
+	int quantidadeDeBitsDeVerificacaoErrados = 0;
+	unsigned int contadorVerificacao = 0;    // quantidade de bits de verificacao
+	unsigned int contadorGeral = 1;          // contador de 3 ate o (quantidade de bits de verificacao + quantidade de bits do quadro) - 1 
+
+	// obtem a formula necessaria para o calculo do Hamming do quadro
+	formula = obtemFormulaDeHamming(quadro);
+
+	// calcula os bits de verificacao apartir do quadro recebido
+	bitsDeVerificacaoCalculados = CalculaHamming(formula, quadro, true);
+
+
+	// isola os bits de Hamming que foram recebidos no quadro
+	bitsDeVerificacaoRecebidos = isolaBitsDeHamming(quadro);
+
+
+	for (int j = 0; j < formula.size(); j++) {
+		if (bitsDeVerificacaoCalculados[j] != bitsDeVerificacaoRecebidos[j]) {
+			quantidadeDeBitsDeVerificacaoErrados++;
+		}
 	}
-	for (unsigned int i = 0; i < quadro.size(); i++) {
-		if (log2(i) != (int)log2(i)) {												//Refaz o hamming no quadro
-			int j = 1;
-			int icopia = i;
-			while (icopia && quadro[i]) {
-				if (icopia % 2) {
-					quadro[j - 1] = !quadro[j - 1];
-				}
-				icopia /= 2;
-				j *= 2;
+
+	if (quantidadeDeBitsDeVerificacaoErrados == 1) {
+		std::cout << "Bits Verificacao Errados: ";
+		for (unsigned int i = 0; i < formula.size(); i++) {
+			unsigned int potenciaDeDois = 1;
+			for (unsigned int k = 0; k < i; k++) {
+				potenciaDeDois = potenciaDeDois * 2;
+			}
+
+			if (bitsDeVerificacaoCalculados[i] != bitsDeVerificacaoRecebidos[i]) {
+				std::cout << "P" << potenciaDeDois << " ";
+				quadroCorrigido[potenciaDeDois - 1] = !bitsDeVerificacaoRecebidos[i];
+			} else {
+				quadroCorrigido[potenciaDeDois - 1] = bitsDeVerificacaoRecebidos[i];
 			}
 		}
-	}
-	for (unsigned int i = 1; i < quadro.size(); i *= 2) {
-		if (quadro[i - 1] != quadroEnquadrado[i-1]) {
-			std::cout << "Erro no quadro. Bit de paridade: " << i << std::endl;
+		std::cout << std::endl;
+	} 
+
+	// inicia a correcao dos bits errados do quadro
+	std::cout << "Bits errados: ";
+	for (int i = 1; i < quadro.size() + 1; i++) {
+		// verifica as formulas em que o bit do quadro ocorre e quais destas formulas estao erradas
+		std::vector<int>::iterator it; 
+		int emListasDeParidade = 0;
+		int emListasDeParidadeErradas = 0;
+		for (int j = 0; j < formula.size(); j++) {
+			it = std::find(formula[j].begin(), formula[j].end(), i);
+			if (it != formula[j].end()) {
+				// conta em quantas formulas o bit do quadro esta
+				emListasDeParidade++;
+				if (bitsDeVerificacaoCalculados[j] != bitsDeVerificacaoRecebidos[j]) {
+					// conta quantas delas estao erradas
+					emListasDeParidadeErradas++;
+				}
+			}
+		}
+		// se um bit do quadro esta em todas as formulas erradas (dos bits de paridade errados) e apenas nelas
+		if (emListasDeParidadeErradas == quantidadeDeBitsDeVerificacaoErrados &&
+			emListasDeParidadeErradas == emListasDeParidade &&
+			emListasDeParidadeErradas > 1) {
+			std::cout << "M" << i << " ";
+			// inverte o bit
+			quadroCorrigido[i - 1] = !quadro[i - 1];
+		} else {
+			// caso contrario mantem o bit
+			quadroCorrigido[i - 1] = quadro[i - 1];
 		}
 	}
-	for (unsigned int i = 1, j = 0; i < quadro.size(); i *= 2, j++) {
-		quadro.erase(quadro.begin() + i - j - 1);
+	std::cout << std::endl;
+
+	quadroSemHamming = removeBitsDeHamming(quadroCorrigido);
+
+	contadorVerificacao = 0;    // quantidade de bits de verificacao
+	contadorGeral = 1;          // contador de 3 ate o (quantidade de bits de verificacao + quantidade de bits do quadro) - 1 
+	std::cout << "quadro sem hamming: ";
+	for (unsigned int i = 0; i < quadroSemHamming.size(); i++) {
+		if (quadroSemHamming[i]) {
+			std::cout << "1";
+		} else {
+			std::cout << "0";
+		}
 	}
-	return quadro;
+	std::cout << std::endl;
+
+	return quadroSemHamming;
+}
+
+
+std::vector<bool> CalculaHamming(std::vector<std::vector<int>>& formula, std::vector<bool>& quadro, bool mostraFormula) {
+	std::vector<bool> bitsDeParidadeCalculados;
+	if (mostraFormula) {
+		std::cout << "quantidade de formulas: " << formula.size() << std::endl;
+	}
+
+	for (unsigned int i = 0; i < formula.size(); i++) {
+		// calcula o indice do bit de verificacao
+		unsigned int potenciaDeDois = 1;
+		for (unsigned int k = 0; k < i; k++) {
+			potenciaDeDois = potenciaDeDois * 2;
+		}
+
+		if (mostraFormula) {
+			std::cout << "P" << potenciaDeDois << " = ";
+		}
+
+		bool bit = false;
+		for (unsigned int j = 0; j < formula[i].size(); j++) {
+			if (quadro[formula[i][j] - 1]) {
+				bit = !bit;
+			}
+
+			if (mostraFormula) {
+				std::cout << "M" << formula[i][j] << " ";
+				if (j < formula[i].size() - 1) {
+					std::cout << "+ ";
+				}
+			}
+		}
+
+		if (mostraFormula) {
+			std::cout << " => ";
+			if (bit) {
+				std::cout << "1";
+			} else {
+				std::cout << "0";
+			}
+			std::cout << std::endl;
+		}
+
+		bitsDeParidadeCalculados.push_back(bit);
+	}
+
+	return bitsDeParidadeCalculados;
+}
+
+
+std::vector<std::vector<int>> obtemFormulaDeHamming(std::vector<bool>& quadro) {
+	unsigned int contadorVerificacao = 0;    // quantidade de bits de verificacao
+	unsigned int contadorGeral = 1;          // contador de 3 ate o (quantidade de bits de verificacao + quantidade de bits do quadro) - 1 
+	std::vector<std::vector<int>> formula;
+
+	while (contadorGeral <= quadro.size()) {
+		unsigned int potenciaDeDois = 1;
+		for (unsigned int i = 0; i < contadorVerificacao; i++) {
+			potenciaDeDois = potenciaDeDois * 2;
+		}
+
+		// se o contadorGeral for uma potencia de 2 
+		if (contadorGeral == potenciaDeDois) {
+			std::vector<int> vetor;
+			formula.push_back(vetor);
+			contadorVerificacao++;
+		// se o contadorGeral NAO for uma potencia de 2 
+		} else {
+			// converte o contadorGeral em potencia de 2 (binario)
+			std::bitset<32> indiceEmBinario(contadorGeral);
+			for (int i = 0; i < 32; i++) {
+				// se o bit de indice i do contadorGeral for 1, o bit do quadro faz parte da formula do bit de verificacao de indice i
+				if (indiceEmBinario[i] == 0b1) {
+					formula[i].push_back(contadorGeral);
+				}
+			}
+		}
+
+		contadorGeral++;
+	}
+
+	return formula;
+}
+
+std::vector<bool> removeBitsDeHamming(std::vector<bool>& quadro) {
+	unsigned int contadorVerificacao = 0;    // quantidade de bits de verificacao
+	unsigned int contadorGeral = 1;          // contador de 3 ate o (quantidade de bits de verificacao + quantidade de bits do quadro) - 1 
+	std::vector<bool> quadroSemHamming;
+
+	while (contadorGeral <= quadro.size()) {
+		unsigned int potenciaDeDois = 1;
+		for (unsigned int i = 0; i < contadorVerificacao; i++) {
+			potenciaDeDois = potenciaDeDois * 2;
+		}
+
+		// se o contadorGeral for uma potencia de 2 
+		if (contadorGeral != potenciaDeDois) {
+			quadroSemHamming.push_back(quadro[contadorGeral - 1]);
+		} else {
+			contadorVerificacao++;
+		}
+		contadorGeral++;
+	}
+
+	return quadroSemHamming;
+}
+
+
+std::vector<bool> isolaBitsDeHamming(std::vector<bool>& quadro) {
+	unsigned int contadorVerificacao = 0;    // quantidade de bits de verificacao
+	unsigned int contadorGeral = 1;          // contador de 3 ate o (quantidade de bits de verificacao + quantidade de bits do quadro) - 1 
+	std::vector<bool> bitsDeHamming;
+
+	while (contadorGeral <= quadro.size()) {
+		unsigned int potenciaDeDois = 1;
+		for (unsigned int i = 0; i < contadorVerificacao; i++) {
+			potenciaDeDois = potenciaDeDois * 2;
+		}
+
+		// se o contadorGeral for uma potencia de 2 
+		if (contadorGeral == potenciaDeDois) {
+			bitsDeHamming.push_back(quadro[contadorGeral - 1]);
+			contadorVerificacao++;
+		} 
+		contadorGeral++;
+	}
+
+	return bitsDeHamming;
 }
